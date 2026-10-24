@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/Producto.dart';
+import '../../models/Producto.dart';
 
 class ProductoService {
-  final CollectionReference<Map<String, dynamic>> _coleccion =
-      FirebaseFirestore.instance.collection('productos');
+  final CollectionReference<Map<String, dynamic>> _coleccion = FirebaseFirestore
+      .instance
+      .collection('productos');
 
   Future<List<Producto>> listar() async {
     final snapshot = await _coleccion.orderBy('id').get();

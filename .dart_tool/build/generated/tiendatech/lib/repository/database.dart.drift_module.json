@@ -7,7 +7,7 @@
       },
       "declaration": {
         "source_uri": "package:tiendatech/repository/database.dart",
-        "offset": 837,
+        "offset": 877,
         "name": "AppDatabase"
       },
       "references": [
@@ -53,7 +53,7 @@
       },
       "declaration": {
         "source_uri": "package:tiendatech/repository/database.dart",
-        "offset": 123,
+        "offset": 142,
         "name": "Categorias"
       },
       "references": [],
@@ -68,7 +68,7 @@
           "nameInDart": "id",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 167,
+            "offset": 185,
             "name": "id"
           },
           "typeConverter": null,
@@ -94,7 +94,7 @@
           "nameInDart": "nombre",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 220,
+            "offset": 237,
             "name": "nombre"
           },
           "typeConverter": null,
@@ -128,7 +128,7 @@
       },
       "declaration": {
         "source_uri": "package:tiendatech/repository/database.dart",
-        "offset": 252,
+        "offset": 289,
         "name": "Productos"
       },
       "references": [],
@@ -143,7 +143,7 @@
           "nameInDart": "id",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 295,
+            "offset": 331,
             "name": "id"
           },
           "typeConverter": null,
@@ -169,7 +169,7 @@
           "nameInDart": "nombre",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 348,
+            "offset": 383,
             "name": "nombre"
           },
           "typeConverter": null,
@@ -190,7 +190,7 @@
           "nameInDart": "idCategoria",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 385,
+            "offset": 419,
             "name": "idCategoria"
           },
           "typeConverter": null,
@@ -211,7 +211,7 @@
           "nameInDart": "precio",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 458,
+            "offset": 491,
             "name": "precio"
           },
           "typeConverter": null,
@@ -232,7 +232,7 @@
           "nameInDart": "imagen",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 499,
+            "offset": 531,
             "name": "imagen"
           },
           "typeConverter": null,
@@ -266,7 +266,7 @@
       },
       "declaration": {
         "source_uri": "package:tiendatech/repository/database.dart",
-        "offset": 542,
+        "offset": 590,
         "name": "Notas"
       },
       "references": [],
@@ -281,7 +281,7 @@
           "nameInDart": "id",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 581,
+            "offset": 628,
             "name": "id"
           },
           "typeConverter": null,
@@ -307,7 +307,7 @@
           "nameInDart": "idProducto",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 633,
+            "offset": 679,
             "name": "idProducto"
           },
           "typeConverter": null,
@@ -328,7 +328,7 @@
           "nameInDart": "texto",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 705,
+            "offset": 750,
             "name": "texto"
           },
           "typeConverter": null,
@@ -349,7 +349,7 @@
           "nameInDart": "fecha",
           "declaration": {
             "source_uri": "package:tiendatech/repository/database.dart",
-            "offset": 746,
+            "offset": 790,
             "name": "fecha"
           },
           "typeConverter": null,

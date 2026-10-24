@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/Nota.dart';
+import '../../models/Nota.dart';
 
 class NotaService {
-  final CollectionReference<Map<String, dynamic>> _coleccion =
-      FirebaseFirestore.instance.collection('notas');
+  final CollectionReference<Map<String, dynamic>> _coleccion = FirebaseFirestore
+      .instance
+      .collection('notas');
 
   Future<List<Nota>> listar() async {
     final snapshot = await _coleccion.orderBy('id').get();

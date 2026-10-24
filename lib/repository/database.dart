@@ -3,11 +3,13 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 part 'database.g.dart';
 
+@UseRowClass(Categoria)
 class Categorias extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get nombre => text()();
 }
 
+@UseRowClass(Producto)
 class Productos extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get nombre => text()();
@@ -16,6 +18,7 @@ class Productos extends Table {
   TextColumn get imagen => text().nullable()();
 }
 
+@UseRowClass(Nota)
 class Notas extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get idProducto => integer().references(Productos, #id)();
@@ -32,8 +35,10 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        beforeOpen: (details) async {
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      );
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+    },
+  );
 }
+
+final db = AppDatabase();
