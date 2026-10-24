@@ -1,0 +1,384 @@
+{
+  "elements": {
+    "AppDatabase": {
+      "id": {
+        "library_uri": "package:tiendatech/repository/database.dart",
+        "name": "AppDatabase"
+      },
+      "declaration": {
+        "source_uri": "package:tiendatech/repository/database.dart",
+        "offset": 837,
+        "name": "AppDatabase"
+      },
+      "references": [
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "categorias"
+        },
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "productos"
+        },
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "notas"
+        }
+      ],
+      "type": "database",
+      "tables": [
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "categorias"
+        },
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "productos"
+        },
+        {
+          "library_uri": "package:tiendatech/repository/database.dart",
+          "name": "notas"
+        }
+      ],
+      "views": [],
+      "includes": [],
+      "queries": [],
+      "schema_version": 1,
+      "daos": [],
+      "has_constructor_arg": false
+    },
+    "categorias": {
+      "id": {
+        "library_uri": "package:tiendatech/repository/database.dart",
+        "name": "categorias"
+      },
+      "declaration": {
+        "source_uri": "package:tiendatech/repository/database.dart",
+        "offset": 123,
+        "name": "Categorias"
+      },
+      "references": [],
+      "type": "table",
+      "columns": [
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "id",
+          "nameInDart": "id",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 167,
+            "name": "id"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [
+            {
+              "type": "primary",
+              "is_auto_increment": true
+            }
+          ],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "string"
+          },
+          "nullable": false,
+          "nameInSql": "nombre",
+          "nameInDart": "nombre",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 220,
+            "name": "nombre"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        }
+      ],
+      "existing_data_class": null,
+      "table_constraints": [],
+      "custom_parent_class": null,
+      "interfaces_for_row_class": [],
+      "fixed_entity_info_name": null,
+      "base_dart_name": "Categorias",
+      "row_class_name": "Categoria",
+      "companion_class_name": null,
+      "without_rowid": false,
+      "strict": false,
+      "write_default_constraints": true,
+      "custom_constraints": [],
+      "attached_indices": []
+    },
+    "productos": {
+      "id": {
+        "library_uri": "package:tiendatech/repository/database.dart",
+        "name": "productos"
+      },
+      "declaration": {
+        "source_uri": "package:tiendatech/repository/database.dart",
+        "offset": 252,
+        "name": "Productos"
+      },
+      "references": [],
+      "type": "table",
+      "columns": [
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "id",
+          "nameInDart": "id",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 295,
+            "name": "id"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [
+            {
+              "type": "primary",
+              "is_auto_increment": true
+            }
+          ],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "string"
+          },
+          "nullable": false,
+          "nameInSql": "nombre",
+          "nameInDart": "nombre",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 348,
+            "name": "nombre"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "id_categoria",
+          "nameInDart": "idCategoria",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 385,
+            "name": "idCategoria"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "precio",
+          "nameInDart": "precio",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 458,
+            "name": "precio"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "string"
+          },
+          "nullable": true,
+          "nameInSql": "imagen",
+          "nameInDart": "imagen",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 499,
+            "name": "imagen"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        }
+      ],
+      "existing_data_class": null,
+      "table_constraints": [],
+      "custom_parent_class": null,
+      "interfaces_for_row_class": [],
+      "fixed_entity_info_name": null,
+      "base_dart_name": "Productos",
+      "row_class_name": "Producto",
+      "companion_class_name": null,
+      "without_rowid": false,
+      "strict": false,
+      "write_default_constraints": true,
+      "custom_constraints": [],
+      "attached_indices": []
+    },
+    "notas": {
+      "id": {
+        "library_uri": "package:tiendatech/repository/database.dart",
+        "name": "notas"
+      },
+      "declaration": {
+        "source_uri": "package:tiendatech/repository/database.dart",
+        "offset": 542,
+        "name": "Notas"
+      },
+      "references": [],
+      "type": "table",
+      "columns": [
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "id",
+          "nameInDart": "id",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 581,
+            "name": "id"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [
+            {
+              "type": "primary",
+              "is_auto_increment": true
+            }
+          ],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "int"
+          },
+          "nullable": false,
+          "nameInSql": "id_producto",
+          "nameInDart": "idProducto",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 633,
+            "name": "idProducto"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "string"
+          },
+          "nullable": false,
+          "nameInSql": "texto",
+          "nameInDart": "texto",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 705,
+            "name": "texto"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        },
+        {
+          "sqlType": {
+            "builtin": "dateTime"
+          },
+          "nullable": false,
+          "nameInSql": "fecha",
+          "nameInDart": "fecha",
+          "declaration": {
+            "source_uri": "package:tiendatech/repository/database.dart",
+            "offset": 746,
+            "name": "fecha"
+          },
+          "typeConverter": null,
+          "clientDefaultCode": null,
+          "defaultArgument": null,
+          "overriddenJsonName": null,
+          "referenceName": null,
+          "documentationComment": null,
+          "constraints": [],
+          "customConstraints": null
+        }
+      ],
+      "existing_data_class": null,
+      "table_constraints": [],
+      "custom_parent_class": null,
+      "interfaces_for_row_class": [],
+      "fixed_entity_info_name": null,
+      "base_dart_name": "Notas",
+      "row_class_name": "Nota",
+      "companion_class_name": null,
+      "without_rowid": false,
+      "strict": false,
+      "write_default_constraints": true,
+      "custom_constraints": [],
+      "attached_indices": []
+    }
+  },
+  "imports": [
+    "package:drift/drift.dart",
+    "package:drift_flutter/drift_flutter.dart"
+  ]
+}
