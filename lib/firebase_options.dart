@@ -21,28 +21,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'TU_API_KEY',
-    appId: 'TU_APP_ID_WEB',
-    messagingSenderId: 'TU_MESSAGING_SENDER_ID',
-    projectId: 'TU_PROJECT_ID',
-    authDomain: 'TU_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'TU_PROJECT_ID.firebasestorage.app',
+    apiKey: 'AIzaSyABKthzrWFcXVfSddIIAh_Un03XpDs6e_M',
+    appId: '1:59051603205:web:0268072729a7743004736c',
+    messagingSenderId: '59051603205',
+    projectId: 'tienda-de-hobbies',
+    authDomain: 'tienda-de-hobbies.firebaseapp.com',
+    storageBucket: 'tienda-de-hobbies.firebasestorage.app',
+    measurementId: 'G-868W7CLBE8',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'TU_API_KEY',
-    appId: 'TU_APP_ID_ANDROID',
-    messagingSenderId: 'TU_MESSAGING_SENDER_ID',
-    projectId: 'TU_PROJECT_ID',
-    storageBucket: 'TU_PROJECT_ID.firebasestorage.app',
+    apiKey: 'AIzaSyCf0Ddc8Qf_hqtCpUQiuAggz_gCNPO_kUM',
+    appId: '1:59051603205:android:d653da4d359dcc7d04736c',
+    messagingSenderId: '59051603205',
+    projectId: 'tienda-de-hobbies',
+    storageBucket: 'tienda-de-hobbies.firebasestorage.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'TU_API_KEY',
-    appId: 'TU_APP_ID_WEB',
-    messagingSenderId: 'TU_MESSAGING_SENDER_ID',
-    projectId: 'TU_PROJECT_ID',
-    authDomain: 'TU_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'TU_PROJECT_ID.firebasestorage.app',
+    apiKey: 'AIzaSyABKthzrWFcXVfSddIIAh_Un03XpDs6e_M',
+    appId: '1:59051603205:web:4416480bd954234504736c',
+    messagingSenderId: '59051603205',
+    projectId: 'tienda-de-hobbies',
+    authDomain: 'tienda-de-hobbies.firebaseapp.com',
+    storageBucket: 'tienda-de-hobbies.firebasestorage.app',
+    measurementId: 'G-7SY8SFQ3JQ',
   );
 }

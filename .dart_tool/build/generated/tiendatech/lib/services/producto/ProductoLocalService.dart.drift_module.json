@@ -1,8 +1,0 @@
-{
-  "elements": {},
-  "imports": [
-    "package:drift/drift.dart",
-    "package:tiendatech/models/Producto.dart",
-    "package:tiendatech/repository/database.dart"
-  ]
-}

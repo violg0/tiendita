@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../models/product.dart';
+import '../repository/database.dart';
+import '../repository/product_note_repository.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
@@ -18,12 +19,32 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
   final _noteController = TextEditingController();
   int _priority = 1;
+  final _repository = ProductNoteRepository();
+  ProductNote? _saved; 
+
+  
 
   @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
   }
+
+  @override
+void initState() {
+  super.initState();
+  _loadNote();
+}
+
+Future<void> _loadNote() async {
+  final saved = await _repository.getNote(widget.product.id);
+  if (!mounted) return;
+  setState(() {
+    _saved = saved;
+    _noteController.text = saved?.note ?? '';
+    _priority = saved?.priority ?? 1;
+  });
+}
 
   Future<void> _save() async {
     if (_priority < 2) {
@@ -34,18 +55,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       );
       return;
     }
-    // TODO: conectar con ProductNoteRepository
-    await widget.onSave?.call(
-      widget.product,
-      _priority,
-      _noteController.text.trim(),
+    await _repository.saveNote(
+      productId: widget.product.id,
+      note: _noteController.text.trim(),
+      priority: _priority,
     );
+    final saved = await _repository.getNote(widget.product.id);
     if (!mounted) return;
+    setState(() => _saved = saved);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Nota lista para guardar')),
+      const SnackBar(content: Text('Nota guardada')),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
@@ -90,6 +112,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
           ),
           const SizedBox(height: 16),
+          Text(
+            _saved == null
+                ? 'No hay información guardada'
+                : _saved!.pendingSync
+                    ? 'Pendiente'
+                    : 'Sincronizado',
+          ),
+          const SizedBox(height: 8),
           ElevatedButton(onPressed: _save, child: const Text('Guardar')),
         ],
       ),

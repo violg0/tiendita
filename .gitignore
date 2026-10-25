@@ -1,0 +1,4 @@
+.dart_tool/
+build/
+server/node_modules/
+.idea/

@@ -1,8 +1,0 @@
-{
-  "elements": {},
-  "imports": [
-    "package:http/http.dart",
-    "package:tiendatech/models/product.dart",
-    "package:tiendatech/services/api_exception.dart"
-  ]
-}
