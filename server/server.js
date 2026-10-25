@@ -8,7 +8,7 @@ const productos = [
     categoria: 'aire libre',
     precio: 200000 ,
     disponibilidad: 5,
-    descripcion: 'Laptop Lenovo Caña telescópica de fibra de vidrio de 2,1 m, liviana y fácil de transportar. Incluye carrete y sirve para principiantes en río o lago. procesador Intel Core i5 y 8GB de RAM.',
+    descripcion: 'Caña telescópica de fibra de vidrio de 2,1 m, liviana y fácil de transportar. Incluye carrete y sirve para principiantes en río o lago.',
     imagePath: 'assets/image/caña_pescar.jfif',
   },
   {
