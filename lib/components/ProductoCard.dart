@@ -31,7 +31,7 @@ class ProductoCard extends StatelessWidget {
   Widget _construirImagen() {
     final url = producto.imagen;
 
-    if (url == null || url.isEmpty) {
+    if (url.isEmpty) {
       return _construirPlaceholder();
     }
 
@@ -67,7 +67,7 @@ class ProductoCard extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '\$${producto.precio}',
+          '\$${producto.precio.toStringAsFixed(2)}',
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),

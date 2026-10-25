@@ -1,6 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:tiendatech/view/ProductosPage.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    // Si usaste `flutterfire configure`, pasa las opciones:
+    // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp();
+  } catch (e) {
+    // La app debe abrir aunque Firebase falle: lo local no depende de él.
+    debugPrint('No se pudo inicializar Firebase: $e');
+  }
+
   runApp(const MyApp());
 }
 
@@ -9,9 +22,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: Text('TiendaTech'))),
+    return MaterialApp(
+      title: 'TiendaTech',
+      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+      home: ProductosPage(),
     );
   }
 }

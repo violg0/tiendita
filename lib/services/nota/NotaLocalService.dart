@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:drift/drift.dart' show Value;
 import 'package:tiendatech/models/Nota.dart' show Nota;
 import 'package:tiendatech/repository/database.dart';
 
@@ -10,16 +9,19 @@ class NotasLocalService {
     texto: fila.texto,
     priority: fila.priority,
     updatedAt: fila.updatedAt,
+    pendingSync: fila.pendingSync,
   );
-  /*
 
-  // READ: una por id (null si no existe)
-  Future<NotaOffline?> obtenerPorId(int id) {
-    return (db.select(
-      db.notasOffline,
-    )..where((c) => c.id.equals(id))).getSingleOrNull();
+  Future<Nota?> obtenerPorProducto(int idProducto) async {
+    final fila =
+        await (db.select(db.notasOffline)
+              ..where((n) => n.idProducto.equals(idProducto))
+              ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)])
+              ..limit(1))
+            .getSingleOrNull();
+
+    return fila == null ? null : _aNota(fila);
   }
-*/
 
   // READ: notas de un producto, como Nota (las más recientes primero)
   Future<List<Nota>> obtenerPorIdProducto(int idProducto) async {
@@ -32,8 +34,16 @@ class NotasLocalService {
     return filas.map(_aNota).toList();
   }
 
-  // CREATE y UPDATE: inserta si el id no existe, actualiza si existe
-  Future<void> guardar(Nota nota) {
+  Future<List<Nota>> listarPendientes() async {
+    final filas = await (db.select(db.notasOffline)
+          ..where((n) => n.pendingSync.equals(true))
+          ..orderBy([(n) => OrderingTerm.asc(n.updatedAt)]))
+        .get();
+
+    return filas.map(_aNota).toList();
+  }
+
+  Future<void> guardar(Nota nota, {bool pendingSync = true}) {
     return db
         .into(db.notasOffline)
         .insertOnConflictUpdate(
@@ -42,8 +52,16 @@ class NotasLocalService {
             idProducto: Value(nota.idProducto),
             priority: Value(nota.priority),
             texto: Value(nota.texto),
+            pendingSync: Value(pendingSync),
+            updatedAt: Value(nota.updatedAt),
           ),
         );
+  }
+
+  Future<void> marcarSincronizada(int id) {
+    return (db.update(db.notasOffline)..where((n) => n.id.equals(id))).write(
+      const NotasOfflineCompanion(pendingSync: Value(false)),
+    );
   }
 
   // DELETE

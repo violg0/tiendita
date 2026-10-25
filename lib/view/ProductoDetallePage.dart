@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:tiendatech/models/Nota.dart' show Nota;
 import 'package:tiendatech/models/Producto.dart' show Producto;
-import 'package:tiendatech/services/categoria/categoria_service.dart'
-    show CategoriaService;
-import 'package:tiendatech/services/producto/ProductoLocalService.dart'
-    show NotaLocalService;
+import 'package:tiendatech/repository/nota_repository.dart' show NotaRepository;
 
-/// Pantalla con toda la información de un [Producto].
-/// Permite elegir una prioridad (1 a 5 estrellas) y guardar notas personales
-/// en la base local (Drift). Las notas se pueden ver (con scroll) y eliminar.
+/// Detalle de un [Producto].
 ///
-/// Los servicios llegan por el constructor (inyección de dependencias).
+/// Permite registrar UNA prioridad (1 a 5) y UNA nota personal por producto.
+/// Regla: solo se guarda si la prioridad es 2 o más.
+///
+/// Esta pantalla no habla con Drift ni con Firebase: usa solo el
+/// [NotaRepository]. Los servicios llegan por el constructor.
 class ProductoDetallePage extends StatefulWidget {
   final Producto producto;
-  final NotaLocalService notaService;
-  final CategoriaService categoriaService;
+  final NotaRepository repositorio;
 
   ProductoDetallePage({
     super.key,
     required this.producto,
-    NotaLocalService? notaService,
-    CategoriaService? categoriaService,
-  }) : notaService = notaService ?? NotaLocalService(),
-       categoriaService = categoriaService ?? CategoriaService();
+    NotaRepository? repositorio,
+  }) : repositorio = repositorio ?? NotaRepository();
 
   @override
   State<ProductoDetallePage> createState() => _ProductoDetallePageState();
@@ -30,19 +26,21 @@ class ProductoDetallePage extends StatefulWidget {
 
 class _ProductoDetallePageState extends State<ProductoDetallePage> {
   static const int _prioridadMaxima = 5;
+  static const int _prioridadMinimaParaGuardar = 2;
+  static const int _largoMaximoNota = 500;
 
   final TextEditingController _textoController = TextEditingController();
-  late final Stream<List<Nota>> _notasStream;
 
   int _prioridad = 1;
-  String? _nombreCategoria;
+
+  Nota? _registro; // lo que hay guardado en Drift (null = nada guardado)
+  bool _cargandoRegistro = true;
+  bool _guardando = false;
 
   @override
   void initState() {
     super.initState();
-    // Se crea una sola vez para que la lista no parpadee al redibujar.
-    _notasStream = widget.notaService.observarPorProducto(widget.producto.id);
-    _cargarCategoria();
+    _cargarRegistro();
   }
 
   @override
@@ -53,50 +51,84 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
   // ---------- LÓGICA ----------
 
-  Future<void> _cargarCategoria() async {
+  /// Al abrir el detalle, recupera nota, prioridad y estado desde Drift.
+  Future<void> _cargarRegistro() async {
     try {
-      final categoria = await widget.categoriaService.obtenerPorId(
-        widget.producto.idCategoria,
+      final registro = await widget.repositorio.obtenerPorProducto(
+        widget.producto.id,
       );
+
       if (!mounted) return;
-      setState(() => _nombreCategoria = categoria?.nombre);
+      setState(() {
+        _registro = registro;
+        if (registro != null) {
+          _textoController.text = registro.texto;
+          _prioridad = registro.priority;
+        }
+      });
     } catch (_) {
-      // Si falla, se muestra el id de la categoría como respaldo.
+      if (mounted) _mostrarMensaje('No se pudo leer la información guardada');
+    } finally {
+      if (mounted) setState(() => _cargandoRegistro = false);
     }
   }
 
-  Future<void> _guardarNota() async {
+  /// Devuelve el mensaje de error, o null si todo está bien.
+  String? _validar(String texto) {
+    if (_prioridad < _prioridadMinimaParaGuardar) {
+      return 'La prioridad debe ser $_prioridadMinimaParaGuardar o más '
+          'para guardar';
+    }
+    if (texto.isEmpty) {
+      return 'Escribe una nota antes de guardar';
+    }
+    return null;
+  }
+
+  Future<void> _guardar() async {
+    if (_guardando) return;
+    FocusScope.of(context).unfocus();
+
     final texto = _textoController.text.trim();
 
-    if (texto.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Escribe una nota antes de guardar')),
-      );
+    final error = _validar(texto);
+    if (error != null) {
+      _mostrarMensaje(error); // no se guarda nada
       return;
     }
 
-    final id = await widget.notaService.siguienteId();
-    await widget.notaService.guardar(
-      Nota(
-        id: id,
+    setState(() => _guardando = true);
+    try {
+      final guardada = await widget.repositorio.guardar(
         idProducto: widget.producto.id,
         texto: texto,
-        fecha: DateTime.now(),
-      ),
-    );
+        priority: _prioridad,
+      );
 
-    if (!mounted) return;
-    FocusScope.of(context).unfocus();
-    _textoController.clear();
-    setState(() => _prioridad = 1);
+      if (!mounted) return;
+      setState(() => _registro = guardada);
+      _mostrarMensaje(
+        guardada.pendingSync
+            ? 'Guardado en el dispositivo. Pendiente de sincronizar'
+            : 'Guardado y sincronizado',
+      );
+    } catch (_) {
+      if (mounted) _mostrarMensaje('No se pudo guardar. Inténtalo de nuevo');
+    } finally {
+      if (mounted) setState(() => _guardando = false);
+    }
   }
 
-  Future<void> _eliminarNota(int id) {
-    return widget.notaService.eliminar(id);
+  void _mostrarMensaje(String texto) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(texto)));
   }
 
   String _formatearFecha(DateTime fecha) {
-    return '${fecha.day}/${fecha.month}/${fecha.year}';
+    String dos(int n) => n.toString().padLeft(2, '0');
+    return '${dos(fecha.day)}/${dos(fecha.month)}/${fecha.year} '
+        '${dos(fecha.hour)}:${dos(fecha.minute)}';
   }
 
   // ---------- INTERFAZ ----------
@@ -105,8 +137,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.producto.nombre)),
-      // Todo vive dentro de un ListView, así la pantalla completa
-      // hace scroll aunque haya muchas notas.
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -114,9 +144,9 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
           const SizedBox(height: 16),
           _construirInformacion(),
           const Divider(height: 32),
-          _construirSeccionNueva(),
+          _construirEstado(),
           const Divider(height: 32),
-          _construirSeccionNotas(),
+          _construirFormulario(),
         ],
       ),
     );
@@ -129,7 +159,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
       borderRadius: BorderRadius.circular(12),
       child: AspectRatio(
         aspectRatio: 4 / 3,
-        child: (url == null || url.isEmpty)
+        child: url.isEmpty
             ? _construirPlaceholder()
             : Image.network(
                 url,
@@ -154,33 +184,101 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
   Widget _construirInformacion() {
     final textos = Theme.of(context).textTheme;
-    final categoria =
-        _nombreCategoria ?? 'Categoría #${widget.producto.idCategoria}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.producto.nombre, style: textos.headlineSmall),
         const SizedBox(height: 8),
-        Text('Precio: \$${widget.producto.precio}', style: textos.titleMedium),
+        Text(
+          'Precio: \$${widget.producto.precio.toStringAsFixed(2)}',
+          style: textos.titleMedium,
+        ),
         const SizedBox(height: 4),
-        Text('Categoría: $categoria', style: textos.bodyMedium),
+        Text(
+          'Categoría: ${widget.producto.categoria}',
+          style: textos.bodyMedium,
+        ),
         const SizedBox(height: 4),
         Text('Código: ${widget.producto.id}', style: textos.bodySmall),
       ],
     );
   }
 
-  Widget _construirSeccionNueva() {
+  /// Muestra lo que hay guardado en Drift:
+  /// nada guardado, Pendiente o Sincronizado.
+  Widget _construirEstado() {
+    final textos = Theme.of(context).textTheme;
+
+    Widget contenido;
+    if (_cargandoRegistro) {
+      contenido = const Center(child: CircularProgressIndicator());
+    } else if (_registro == null) {
+      contenido = const Row(
+        children: [
+          Icon(Icons.info_outline),
+          SizedBox(width: 8),
+          Expanded(child: Text('No hay información guardada')),
+        ],
+      );
+    } else {
+      final registro = _registro!;
+      final sincronizado = !registro.pendingSync;
+      final color = sincronizado ? Colors.green : Colors.orange;
+
+      contenido = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                sincronizado ? Icons.cloud_done : Icons.cloud_upload_outlined,
+                color: color,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                sincronizado ? 'Sincronizado' : 'Pendiente',
+                style: TextStyle(color: color, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Última actualización: ${_formatearFecha(registro.updatedAt)}',
+            style: textos.bodySmall,
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Prioridad', style: Theme.of(context).textTheme.titleMedium),
-        _construirSelectorPrioridad(),
+        Text('Estado', style: textos.titleMedium),
         const SizedBox(height: 8),
+        contenido,
+      ],
+    );
+  }
+
+  Widget _construirFormulario() {
+    final textos = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Prioridad', style: textos.titleMedium),
+        _construirSelectorPrioridad(),
+        Text(
+          'Prioridad $_prioridad de $_prioridadMaxima '
+          '(mínimo $_prioridadMinimaParaGuardar para guardar)',
+          style: textos.bodySmall,
+        ),
+        const SizedBox(height: 12),
         TextField(
           controller: _textoController,
           maxLines: 3,
+          maxLength: _largoMaximoNota,
           decoration: const InputDecoration(
             labelText: 'Nota personal',
             border: OutlineInputBorder(),
@@ -190,8 +288,14 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: _guardarNota,
-            child: const Text('Guardar nota'),
+            onPressed: _guardando ? null : _guardar,
+            child: _guardando
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Guardar'),
           ),
         ),
       ],
@@ -210,47 +314,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
           onPressed: () => setState(() => _prioridad = nivel),
         );
       }),
-    );
-  }
-
-  Widget _construirSeccionNotas() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Mis notas', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        _construirListaNotas(),
-      ],
-    );
-  }
-
-  Widget _construirListaNotas() {
-    return StreamBuilder<List<Nota>>(
-      stream: _notasStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final notas = snapshot.data!;
-        if (notas.isEmpty) {
-          return const Text('Aún no tienes notas para este producto');
-        }
-
-        return Column(children: notas.map(_construirNota).toList());
-      },
-    );
-  }
-
-  Widget _construirNota(Nota nota) {
-    return Card(
-      child: ListTile(
-        title: Text(nota.texto),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () => _eliminarNota(nota.id),
-        ),
-      ),
     );
   }
 }

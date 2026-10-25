@@ -1,35 +1,66 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import '../../models/Producto.dart';
 
 class ProductoService {
-  final CollectionReference<Map<String, dynamic>> _coleccion = FirebaseFirestore
-      .instance
-      .collection('productos');
+  static final Uri _productosUri = Uri.https(
+    'fakestoreapi.com',
+    '/products',
+  );
+
+  final http.Client _cliente;
+
+  ProductoService({http.Client? cliente}) : _cliente = cliente ?? http.Client();
 
   Future<List<Producto>> listar() async {
-    final snapshot = await _coleccion.orderBy('id').get();
-    return snapshot.docs.map((d) => Producto.fromJson(d.data())).toList();
-  }
+    final response = await _cliente.get(_productosUri);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw ProductoApiException(
+        'HTTP ${response.statusCode}: no se pudo cargar el catálogo',
+      );
+    }
 
-  Future<Producto?> obtenerPorId(int id) async {
-    final doc = await _coleccion.doc(id.toString()).get();
-    final data = doc.data();
-    return data == null ? null : Producto.fromJson(data);
-  }
+    final dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } on FormatException {
+      throw const ProductoApiException(
+        'La API devolvió una respuesta JSON inválida',
+      );
+    }
 
-  Future<List<Producto>> listarPorCategoria(int idCategoria) async {
-    final snapshot = await _coleccion
-        .where('id_categoria', isEqualTo: idCategoria)
-        .get();
-    return snapshot.docs.map((d) => Producto.fromJson(d.data())).toList();
-  }
+    if (decoded is! List) {
+      throw const ProductoApiException(
+        'La respuesta de la API no contiene una lista de productos',
+      );
+    }
 
-  Future<void> guardar(Producto producto) {
-    return _coleccion.doc(producto.id.toString()).set(producto.toJson());
+    try {
+      return decoded
+          .map(
+            (producto) => Producto.fromJson(
+              Map<String, dynamic>.from(producto as Map),
+            ),
+          )
+          .toList();
+    } on FormatException {
+      throw const ProductoApiException(
+        'La API devolvió un producto con formato inválido',
+      );
+    } on TypeError {
+      throw const ProductoApiException(
+        'La API devolvió un producto con formato inválido',
+      );
+    }
   }
+}
 
-  Future<void> eliminar(int id) {
-    return _coleccion.doc(id.toString()).delete();
-  }
+class ProductoApiException implements Exception {
+  final String message;
+
+  const ProductoApiException(this.message);
+
+  @override
+  String toString() => message;
 }

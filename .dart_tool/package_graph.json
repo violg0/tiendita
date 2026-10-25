@@ -11,6 +11,7 @@
         "cupertino_icons",
         "drift",
         "drift_flutter",
+        "firebase_core",
         "flutter",
         "http",
         "path_provider",
@@ -112,6 +113,16 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "firebase_core",
+      "version": "5.1.0",
+      "dependencies": [
+        "firebase_core_platform_interface",
+        "firebase_core_web",
+        "flutter",
+        "meta"
       ]
     },
     {
@@ -612,6 +623,15 @@
       ]
     },
     {
+      "name": "firebase_core_web",
+      "version": "4.1.0",
+      "dependencies": [
+        "firebase_core_platform_interface",
+        "meta",
+        "web"
+      ]
+    },
+    {
       "name": "firebase_core_platform_interface",
       "version": "8.1.1",
       "dependencies": [
@@ -619,16 +639,6 @@
         "flutter",
         "meta",
         "plugin_platform_interface"
-      ]
-    },
-    {
-      "name": "firebase_core",
-      "version": "5.1.0",
-      "dependencies": [
-        "firebase_core_platform_interface",
-        "firebase_core_web",
-        "flutter",
-        "meta"
       ]
     },
     {
@@ -904,15 +914,6 @@
       "version": "2.1.8",
       "dependencies": [
         "meta"
-      ]
-    },
-    {
-      "name": "firebase_core_web",
-      "version": "4.1.0",
-      "dependencies": [
-        "firebase_core_platform_interface",
-        "meta",
-        "web"
       ]
     },
     {

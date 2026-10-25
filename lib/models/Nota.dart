@@ -4,6 +4,7 @@ class Nota {
   final String texto;
   final int priority;
   final DateTime updatedAt;
+  final bool pendingSync;
 
   Nota({
     required this.id,
@@ -11,6 +12,7 @@ class Nota {
     required this.texto,
     required this.priority,
     DateTime? updatedAt,
+    this.pendingSync = false,
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Nota.fromJson(Map<String, dynamic> json) {

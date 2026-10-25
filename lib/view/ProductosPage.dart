@@ -2,29 +2,35 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:tiendatech/components/ProductoCard.dart' show ProductoCard;
-import 'package:tiendatech/repository/database.dart' show Producto;
+import 'package:tiendatech/models/Producto.dart' show Producto;
+import 'package:tiendatech/repository/nota_repository.dart' show NotaRepository;
 import 'package:tiendatech/services/producto/producto_service.dart'
     show ProductoService;
 import 'package:tiendatech/view/ProductoDetallePage.dart'
     show ProductoDetallePage;
 
-/// Los estados posibles de la pantalla (los que dibujaste en el boceto).
+/// Los estados posibles de la pantalla.
 enum EstadoCarga { cargando, exito, vacio, timeout, error }
 
-/// Pantalla que muestra los productos en una cuadrícula (matriz) de tarjetas.
+/// Catálogo de productos en una cuadrícula de tarjetas.
 ///
 /// Responsabilidades:
-/// - Pedir los productos al servicio.
-/// - Elegir qué dibujar según el estado.
-/// - Navegar al detalle cuando se toca una tarjeta.
+/// - Pedir los productos al servicio y mostrar cada estado.
+/// - Permitir reintentar cuando hay error o timeout.
+/// - Sincronizar los registros pendientes (a través del repositorio).
+/// - Navegar al detalle enviando el producto seleccionado.
 ///
-/// El servicio llega por el constructor (inyección de dependencias),
-/// así esta pantalla no depende de cómo está construido por dentro.
+/// Los servicios llegan por el constructor (inyección de dependencias).
 class ProductosPage extends StatefulWidget {
   final ProductoService productoService;
+  final NotaRepository repositorio;
 
-  ProductosPage({super.key, ProductoService? productoService})
-    : productoService = productoService ?? ProductoService();
+  ProductosPage({
+    super.key,
+    ProductoService? productoService,
+    NotaRepository? repositorio,
+  }) : productoService = productoService ?? ProductoService(),
+       repositorio = repositorio ?? NotaRepository();
 
   @override
   State<ProductosPage> createState() => _ProductosPageState();
@@ -35,6 +41,8 @@ class _ProductosPageState extends State<ProductosPage> {
 
   EstadoCarga _estado = EstadoCarga.cargando;
   List<Producto> _productos = [];
+  String? _detalleError;
+  bool _sincronizando = false;
 
   @override
   void initState() {
@@ -45,7 +53,10 @@ class _ProductosPageState extends State<ProductosPage> {
   // ---------- LÓGICA ----------
 
   Future<void> _cargarProductos() async {
-    setState(() => _estado = EstadoCarga.cargando);
+    setState(() {
+      _estado = EstadoCarga.cargando;
+      _detalleError = null;
+    });
 
     try {
       final productos = await widget.productoService.listar().timeout(
@@ -59,8 +70,14 @@ class _ProductosPageState extends State<ProductosPage> {
       });
     } on TimeoutException {
       _cambiarEstado(EstadoCarga.timeout);
-    } catch (_) {
-      _cambiarEstado(EstadoCarga.error);
+    } catch (e) {
+      // El servicio lanza mensajes como "HTTP 404" o "Sin conexión";
+      // aquí solo se muestran.
+      if (!mounted) return;
+      setState(() {
+        _detalleError = e.toString().replaceFirst('Exception: ', '');
+        _estado = EstadoCarga.error;
+      });
     }
   }
 
@@ -69,11 +86,42 @@ class _ProductosPageState extends State<ProductosPage> {
     setState(() => _estado = nuevoEstado);
   }
 
+  Future<void> _sincronizarPendientes() async {
+    setState(() => _sincronizando = true);
+
+    String mensaje;
+    try {
+      final resultado = await widget.repositorio.sincronizarPendientes();
+      mensaje = _mensajeSincronizacion(resultado.enviados, resultado.fallidos);
+    } catch (_) {
+      mensaje = 'No se pudo sincronizar. Inténtalo de nuevo';
+    }
+
+    if (!mounted) return;
+    setState(() => _sincronizando = false);
+    _mostrarMensaje(mensaje);
+  }
+
+  String _mensajeSincronizacion(int enviados, int fallidos) {
+    if (enviados == 0 && fallidos == 0) return 'No hay registros pendientes';
+    if (fallidos == 0) return 'Se sincronizaron $enviados registro(s)';
+    return 'Se sincronizaron $enviados; $fallidos siguen pendientes';
+  }
+
+  void _mostrarMensaje(String texto) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(texto)));
+  }
+
   void _abrirDetalle(Producto producto) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProductoDetallePage(producto: producto),
+        builder: (_) => ProductoDetallePage(
+          producto: producto,
+          repositorio: widget.repositorio,
+        ),
       ),
     );
   }
@@ -84,7 +132,34 @@ class _ProductosPageState extends State<ProductosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Productos')),
-      body: _construirCuerpo(),
+      body: Column(
+        children: [
+          _construirBotonSincronizar(),
+          Expanded(child: _construirCuerpo()),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirBotonSincronizar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: _sincronizando ? null : _sincronizarPendientes,
+          icon: _sincronizando
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.sync),
+          label: Text(
+            _sincronizando ? 'Sincronizando...' : 'Sincronizar pendientes',
+          ),
+        ),
+      ),
     );
   }
 
@@ -99,7 +174,7 @@ class _ProductosPageState extends State<ProductosPage> {
       case EstadoCarga.timeout:
         return _construirMensaje('Timeout');
       case EstadoCarga.error:
-        return _construirMensaje('Error de petición');
+        return _construirMensaje('Error de petición', detalle: _detalleError);
     }
   }
 
@@ -123,18 +198,31 @@ class _ProductosPageState extends State<ProductosPage> {
     );
   }
 
-  Widget _construirMensaje(String texto) {
+  Widget _construirMensaje(String texto, {String? detalle}) {
+    final textos = Theme.of(context).textTheme;
+
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(texto, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: _cargarProductos,
-            child: const Text('Reintentar'),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(texto, style: textos.titleMedium),
+            if (detalle != null && detalle.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                detalle,
+                textAlign: TextAlign.center,
+                style: textos.bodySmall,
+              ),
+            ],
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: _cargarProductos,
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
       ),
     );
   }
