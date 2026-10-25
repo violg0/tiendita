@@ -6,11 +6,20 @@ import '../repository/product_note_repository.dart';
 class ProductDetailPage extends StatefulWidget {
   final Product product;
 
-  /// Callback de guardado. Si es null solo se valida la regla de prioridad.
+  /// Callback de guardado (ya no se usa; se deja para no romper product_screen).
   final Future<void> Function(Product product, int priority, String note)?
       onSave;
 
-  const ProductDetailPage({super.key, required this.product, this.onSave});
+  /// Repository a usar. Si es null se crea el real (Drift + Firestore).
+  /// Las pruebas pasan uno falso.
+  final ProductNoteRepository? repository;
+
+  const ProductDetailPage({
+    super.key,
+    required this.product,
+    this.onSave,
+    this.repository,
+  });
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -19,10 +28,15 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
   final _noteController = TextEditingController();
   int _priority = 1;
-  final _repository = ProductNoteRepository();
-  ProductNote? _saved; 
+  late final ProductNoteRepository _repository;
+  ProductNote? _saved;
 
-  
+  @override
+  void initState() {
+    super.initState();
+    _repository = widget.repository ?? ProductNoteRepository();
+    _loadNote();
+  }
 
   @override
   void dispose() {
@@ -30,21 +44,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     super.dispose();
   }
 
-  @override
-void initState() {
-  super.initState();
-  _loadNote();
-}
-
-Future<void> _loadNote() async {
-  final saved = await _repository.getNote(widget.product.id);
-  if (!mounted) return;
-  setState(() {
-    _saved = saved;
-    _noteController.text = saved?.note ?? '';
-    _priority = saved?.priority ?? 1;
-  });
-}
+  Future<void> _loadNote() async {
+    final saved = await _repository.getNote(widget.product.id);
+    if (!mounted) return;
+    setState(() {
+      _saved = saved;
+      _noteController.text = saved?.note ?? '';
+      _priority = saved?.priority ?? 1;
+    });
+  }
 
   Future<void> _save() async {
     if (_priority < 2) {
@@ -55,7 +63,7 @@ Future<void> _loadNote() async {
       );
       return;
     }
-    await _repository.saveNote(
+    final synced = await _repository.saveNote(
       productId: widget.product.id,
       note: _noteController.text.trim(),
       priority: _priority,
@@ -64,10 +72,28 @@ Future<void> _loadNote() async {
     if (!mounted) return;
     setState(() => _saved = saved);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Nota guardada')),
+      SnackBar(
+        content: Text(synced
+            ? 'Nota guardada y sincronizada'
+            : 'Nota guardada en el dispositivo. Pendiente de sincronizar'),
+      ),
     );
   }
-  
+
+  Future<void> _syncPending() async {
+    final result = await _repository.syncPending();
+    final saved = await _repository.getNote(widget.product.id);
+    if (!mounted) return;
+    setState(() => _saved = saved);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result.total == 0
+            ? 'No hay registros pendientes'
+            : 'Sincronizados ${result.sent} de ${result.total}'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
@@ -121,6 +147,11 @@ Future<void> _loadNote() async {
           ),
           const SizedBox(height: 8),
           ElevatedButton(onPressed: _save, child: const Text('Guardar')),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: _syncPending,
+            child: const Text('Sincronizar pendientes'),
+          ),
         ],
       ),
     );
