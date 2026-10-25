@@ -2,3 +2,7 @@
 build/
 server/node_modules/
 .idea/
+.dart_tool/
+build/
+server/node_modules/
+.idea/
