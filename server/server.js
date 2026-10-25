@@ -9,7 +9,7 @@ const productos = [
     precio: 200000 ,
     disponibilidad: 5,
     descripcion: 'Caña telescópica de fibra de vidrio de 2,1 m, liviana y fácil de transportar. Incluye carrete y sirve para principiantes en río o lago.',
-    imagePath: 'assets/image/caña_pescar.jfif',
+    imagePath: 'assets/image/caña_pescar.jpg',
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const productos = [
     precio: 180000,
     disponibilidad: 20,
     descripcion: 'Binoculares 10x42 con lentes de buena nitidez y agarre antideslizante. Perfectos para observar aves, paisajes o ir de camping.',
-    imagePath: 'assets/image/binoculares.jfif',
+    imagePath: 'assets/image/binoculares.jpg',
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const productos = [
     precio: 50000,
     disponibilidad: 12,
     descripcion: 'Cubo mágico megamix con giro suave y colores vivos. Ejercita la lógica y la memoria, ideal para aprender a resolverlo o competir contra el reloj.',
-    imagePath: 'assets/image/Cubo_megamix.jfif',
+    imagePath: 'assets/image/Cubo_megamix.jpg',
   },
 ];
 
