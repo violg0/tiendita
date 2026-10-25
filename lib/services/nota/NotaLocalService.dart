@@ -1,43 +1,52 @@
-class CategoriaLocalService {
+import 'package:drift/drift.dart';
+
+import '../../models/Nota.dart';
+import '../../repository/database.dart';
+
+class NotaLocalService {
   final AppDatabase _db;
-  CategoriaLocalService([AppDatabase? database]) : _db = database ?? db;
+  NotaLocalService([AppDatabase? database]) : _db = database ?? db;
 
-  Future<List<Categoria>> listar() {
+  Future<List<Nota>> listar() {
     return (_db.select(
-      _db.categorias,
-    )..orderBy([(c) => OrderingTerm.asc(c.id)])).get();
+      _db.notas,
+    )..orderBy([(n) => OrderingTerm.desc(n.fecha)])).get();
   }
 
-  Stream<List<Categoria>> observar() {
+  Future<Nota?> obtenerPorId(String id) {
     return (_db.select(
-      _db.categorias,
-    )..orderBy([(c) => OrderingTerm.asc(c.id)])).watch();
+      _db.notas,
+    )..where((n) => n.id.equals(id))).getSingleOrNull();
   }
 
-  Future<Categoria?> obtenerPorId(int id) {
-    return (_db.select(
-      _db.categorias,
-    )..where((c) => c.id.equals(id))).getSingleOrNull();
+  Future<List<Nota>> listarPorProducto(String idProducto) {
+    return (_db.select(_db.notas)
+          ..where((n) => n.idProducto.equals(idProducto))
+          ..orderBy([(n) => OrderingTerm.desc(n.fecha)]))
+        .get();
   }
 
-  // Inserta o actualiza (equivale al .set() de Firestore)
-  Future<void> guardar(Categoria c) {
+  Stream<List<Nota>> observarPorProducto(String idProducto) {
+    return (_db.select(_db.notas)
+          ..where((n) => n.idProducto.equals(idProducto))
+          ..orderBy([(n) => OrderingTerm.desc(n.fecha)]))
+        .watch();
+  }
+
+  Future<void> guardar(Nota n) {
     return _db
-        .into(_db.categorias)
+        .into(_db.notas)
         .insertOnConflictUpdate(
-          CategoriasCompanion(id: Value(c.id), nombre: Value(c.nombre)),
+          NotasCompanion(
+            id: Value(n.id),
+            idProducto: Value(n.idProducto),
+            texto: Value(n.texto),
+            fecha: Value(n.fecha),
+          ),
         );
   }
 
-  Future<void> eliminar(int id) {
-    return (_db.delete(_db.categorias)..where((c) => c.id.equals(id))).go();
-  }
-
-  Future<int> siguienteId() async {
-    final maxId = _db.categorias.id.max();
-    final fila = await (_db.selectOnly(
-      _db.categorias,
-    )..addColumns([maxId])).getSingle();
-    return (fila.read(maxId) ?? 0) + 1;
+  Future<void> eliminar(String id) {
+    return (_db.delete(_db.notas)..where((n) => n.id.equals(id))).go();
   }
 }

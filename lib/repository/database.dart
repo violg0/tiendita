@@ -1,32 +1,36 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import '../models/Nota.dart';
+import '../models/Producto.dart';
+
 part 'database.g.dart';
 
-@UseRowClass(Categoria)
-class Categorias extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get nombre => text()();
-}
-
+// Los ids son los ids de documento de Firestore.
 @UseRowClass(Producto)
 class Productos extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   TextColumn get nombre => text()();
-  IntColumn get idCategoria => integer().references(Categorias, #id)();
+  TextColumn get categoria => text()();
   IntColumn get precio => integer()();
-  TextColumn get imagen => text().nullable()();
+  IntColumn get stock => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 @UseRowClass(Nota)
 class Notas extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get idProducto => integer().references(Productos, #id)();
+  TextColumn get id => text()();
+  TextColumn get idProducto => text().references(Productos, #id)();
   TextColumn get texto => text()();
   DateTimeColumn get fecha => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Categorias, Productos, Notas])
+@DriftDatabase(tables: [Productos, Notas])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'tienda'));
 

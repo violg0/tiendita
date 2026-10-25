@@ -7,29 +7,37 @@ class NotaService {
       .instance
       .collection('notas');
 
+  Nota _desdeDoc(DocumentSnapshot<Map<String, dynamic>> d) =>
+      Nota.fromJson(d.data()!, d.id);
+
   Future<List<Nota>> listar() async {
-    final snapshot = await _coleccion.orderBy('id').get();
-    return snapshot.docs.map((d) => Nota.fromJson(d.data())).toList();
+    final snapshot = await _coleccion.get();
+    return snapshot.docs.map(_desdeDoc).toList();
   }
 
-  Future<List<Nota>> listarPorProducto(int idProducto) async {
+  Future<List<Nota>> listarPorProducto(String idProducto) async {
     final snapshot = await _coleccion
         .where('id_producto', isEqualTo: idProducto)
         .get();
-    return snapshot.docs.map((d) => Nota.fromJson(d.data())).toList();
+    return snapshot.docs.map(_desdeDoc).toList();
   }
 
-  Future<Nota?> obtenerPorId(int id) async {
-    final doc = await _coleccion.doc(id.toString()).get();
-    final data = doc.data();
-    return data == null ? null : Nota.fromJson(data);
+  Future<Nota?> obtenerPorId(String id) async {
+    final doc = await _coleccion.doc(id).get();
+    return doc.exists ? _desdeDoc(doc) : null;
   }
 
-  Future<void> guardar(Nota nota) {
-    return _coleccion.doc(nota.id.toString()).set(nota.toJson());
+  /// Si [nota.id] esta vacio crea un documento con id automatico.
+  Future<String> guardar(Nota nota) async {
+    if (nota.id.isEmpty) {
+      final ref = await _coleccion.add(nota.toJson());
+      return ref.id;
+    }
+    await _coleccion.doc(nota.id).set(nota.toJson());
+    return nota.id;
   }
 
-  Future<void> eliminar(int id) {
-    return _coleccion.doc(id.toString()).delete();
+  Future<void> eliminar(String id) {
+    return _coleccion.doc(id).delete();
   }
 }

@@ -1,33 +1,33 @@
 class Producto {
-  final int id;
+  final String id;
   final String nombre;
-  final int idCategoria;
+  final String categoria;
   final int precio;
-  final String imagen;
+  final int stock;
 
   Producto({
     required this.id,
     required this.nombre,
-    required this.idCategoria,
+    required this.categoria,
     required this.precio,
-    required this.imagen,
+    required this.stock,
   });
 
-  factory Producto.fromJson(Map<String, dynamic> json) {
+  /// [id] es el id del documento en Firestore (no va dentro de los campos).
+  factory Producto.fromJson(Map<String, dynamic> json, String id) {
     return Producto(
-      id: json["id"],
+      id: id,
       nombre: json["nombre"],
-      idCategoria: json["id_categoria"],
-      precio: json["precio"],
-      imagen: json["imagen"],
+      categoria: json["categoria"],
+      precio: (json["precio"] as num).toInt(),
+      stock: (json["stock"] as num).toInt(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    "id": id,
     "nombre": nombre,
-    "id_categoria": idCategoria,
+    "categoria": categoria,
     "precio": precio,
-    "imagen": imagen,
+    "stock": stock,
   };
 }
