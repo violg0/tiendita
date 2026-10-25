@@ -1,553 +1,10 @@
 // ignore_for_file: type=lint
-class $CategoriasTable extends Categorias
-    with TableInfo<$CategoriasTable, Categoria> {
+class $NotasOfflineTable extends NotasOffline
+    with TableInfo<$NotasOfflineTable, NotaOffline> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CategoriasTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nombreMeta = const VerificationMeta('nombre');
-  @override
-  late final GeneratedColumn<String> nombre = GeneratedColumn<String>(
-    'nombre',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, nombre];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'categorias';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Categoria> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nombre')) {
-      context.handle(
-        _nombreMeta,
-        nombre.isAcceptableOrUnknown(data['nombre']!, _nombreMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nombreMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Categoria map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Categoria(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      nombre: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}nombre'],
-      )!,
-    );
-  }
-
-  @override
-  $CategoriasTable createAlias(String alias) {
-    return $CategoriasTable(attachedDatabase, alias);
-  }
-}
-
-class Categoria extends DataClass implements Insertable<Categoria> {
-  final int id;
-  final String nombre;
-  const Categoria({required this.id, required this.nombre});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nombre'] = Variable<String>(nombre);
-    return map;
-  }
-
-  CategoriasCompanion toCompanion(bool nullToAbsent) {
-    return CategoriasCompanion(id: Value(id), nombre: Value(nombre));
-  }
-
-  factory Categoria.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Categoria(
-      id: serializer.fromJson<int>(json['id']),
-      nombre: serializer.fromJson<String>(json['nombre']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nombre': serializer.toJson<String>(nombre),
-    };
-  }
-
-  Categoria copyWith({int? id, String? nombre}) =>
-      Categoria(id: id ?? this.id, nombre: nombre ?? this.nombre);
-  Categoria copyWithCompanion(CategoriasCompanion data) {
-    return Categoria(
-      id: data.id.present ? data.id.value : this.id,
-      nombre: data.nombre.present ? data.nombre.value : this.nombre,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Categoria(')
-          ..write('id: $id, ')
-          ..write('nombre: $nombre')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nombre);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Categoria &&
-          other.id == this.id &&
-          other.nombre == this.nombre);
-}
-
-class CategoriasCompanion extends UpdateCompanion<Categoria> {
-  final Value<int> id;
-  final Value<String> nombre;
-  const CategoriasCompanion({
-    this.id = const Value.absent(),
-    this.nombre = const Value.absent(),
-  });
-  CategoriasCompanion.insert({
-    this.id = const Value.absent(),
-    required String nombre,
-  }) : nombre = Value(nombre);
-  static Insertable<Categoria> custom({
-    Expression<int>? id,
-    Expression<String>? nombre,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nombre != null) 'nombre': nombre,
-    });
-  }
-
-  CategoriasCompanion copyWith({Value<int>? id, Value<String>? nombre}) {
-    return CategoriasCompanion(
-      id: id ?? this.id,
-      nombre: nombre ?? this.nombre,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nombre.present) {
-      map['nombre'] = Variable<String>(nombre.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CategoriasCompanion(')
-          ..write('id: $id, ')
-          ..write('nombre: $nombre')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $ProductosTable extends Productos
-    with TableInfo<$ProductosTable, Producto> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ProductosTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nombreMeta = const VerificationMeta('nombre');
-  @override
-  late final GeneratedColumn<String> nombre = GeneratedColumn<String>(
-    'nombre',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _idCategoriaMeta = const VerificationMeta(
-    'idCategoria',
-  );
-  @override
-  late final GeneratedColumn<int> idCategoria = GeneratedColumn<int>(
-    'id_categoria',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _precioMeta = const VerificationMeta('precio');
-  @override
-  late final GeneratedColumn<int> precio = GeneratedColumn<int>(
-    'precio',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _imagenMeta = const VerificationMeta('imagen');
-  @override
-  late final GeneratedColumn<String> imagen = GeneratedColumn<String>(
-    'imagen',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    nombre,
-    idCategoria,
-    precio,
-    imagen,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'productos';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Producto> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nombre')) {
-      context.handle(
-        _nombreMeta,
-        nombre.isAcceptableOrUnknown(data['nombre']!, _nombreMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nombreMeta);
-    }
-    if (data.containsKey('id_categoria')) {
-      context.handle(
-        _idCategoriaMeta,
-        idCategoria.isAcceptableOrUnknown(
-          data['id_categoria']!,
-          _idCategoriaMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_idCategoriaMeta);
-    }
-    if (data.containsKey('precio')) {
-      context.handle(
-        _precioMeta,
-        precio.isAcceptableOrUnknown(data['precio']!, _precioMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_precioMeta);
-    }
-    if (data.containsKey('imagen')) {
-      context.handle(
-        _imagenMeta,
-        imagen.isAcceptableOrUnknown(data['imagen']!, _imagenMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Producto map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Producto(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      nombre: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}nombre'],
-      )!,
-      idCategoria: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id_categoria'],
-      )!,
-      precio: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}precio'],
-      )!,
-      imagen: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}imagen'],
-      ),
-    );
-  }
-
-  @override
-  $ProductosTable createAlias(String alias) {
-    return $ProductosTable(attachedDatabase, alias);
-  }
-}
-
-class Producto extends DataClass implements Insertable<Producto> {
-  final int id;
-  final String nombre;
-  final int idCategoria;
-  final int precio;
-  final String? imagen;
-  const Producto({
-    required this.id,
-    required this.nombre,
-    required this.idCategoria,
-    required this.precio,
-    this.imagen,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nombre'] = Variable<String>(nombre);
-    map['id_categoria'] = Variable<int>(idCategoria);
-    map['precio'] = Variable<int>(precio);
-    if (!nullToAbsent || imagen != null) {
-      map['imagen'] = Variable<String>(imagen);
-    }
-    return map;
-  }
-
-  ProductosCompanion toCompanion(bool nullToAbsent) {
-    return ProductosCompanion(
-      id: Value(id),
-      nombre: Value(nombre),
-      idCategoria: Value(idCategoria),
-      precio: Value(precio),
-      imagen: imagen == null && nullToAbsent
-          ? const Value.absent()
-          : Value(imagen),
-    );
-  }
-
-  factory Producto.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Producto(
-      id: serializer.fromJson<int>(json['id']),
-      nombre: serializer.fromJson<String>(json['nombre']),
-      idCategoria: serializer.fromJson<int>(json['idCategoria']),
-      precio: serializer.fromJson<int>(json['precio']),
-      imagen: serializer.fromJson<String?>(json['imagen']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nombre': serializer.toJson<String>(nombre),
-      'idCategoria': serializer.toJson<int>(idCategoria),
-      'precio': serializer.toJson<int>(precio),
-      'imagen': serializer.toJson<String?>(imagen),
-    };
-  }
-
-  Producto copyWith({
-    int? id,
-    String? nombre,
-    int? idCategoria,
-    int? precio,
-    Value<String?> imagen = const Value.absent(),
-  }) => Producto(
-    id: id ?? this.id,
-    nombre: nombre ?? this.nombre,
-    idCategoria: idCategoria ?? this.idCategoria,
-    precio: precio ?? this.precio,
-    imagen: imagen.present ? imagen.value : this.imagen,
-  );
-  Producto copyWithCompanion(ProductosCompanion data) {
-    return Producto(
-      id: data.id.present ? data.id.value : this.id,
-      nombre: data.nombre.present ? data.nombre.value : this.nombre,
-      idCategoria: data.idCategoria.present
-          ? data.idCategoria.value
-          : this.idCategoria,
-      precio: data.precio.present ? data.precio.value : this.precio,
-      imagen: data.imagen.present ? data.imagen.value : this.imagen,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Producto(')
-          ..write('id: $id, ')
-          ..write('nombre: $nombre, ')
-          ..write('idCategoria: $idCategoria, ')
-          ..write('precio: $precio, ')
-          ..write('imagen: $imagen')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nombre, idCategoria, precio, imagen);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Producto &&
-          other.id == this.id &&
-          other.nombre == this.nombre &&
-          other.idCategoria == this.idCategoria &&
-          other.precio == this.precio &&
-          other.imagen == this.imagen);
-}
-
-class ProductosCompanion extends UpdateCompanion<Producto> {
-  final Value<int> id;
-  final Value<String> nombre;
-  final Value<int> idCategoria;
-  final Value<int> precio;
-  final Value<String?> imagen;
-  const ProductosCompanion({
-    this.id = const Value.absent(),
-    this.nombre = const Value.absent(),
-    this.idCategoria = const Value.absent(),
-    this.precio = const Value.absent(),
-    this.imagen = const Value.absent(),
-  });
-  ProductosCompanion.insert({
-    this.id = const Value.absent(),
-    required String nombre,
-    required int idCategoria,
-    required int precio,
-    this.imagen = const Value.absent(),
-  }) : nombre = Value(nombre),
-       idCategoria = Value(idCategoria),
-       precio = Value(precio);
-  static Insertable<Producto> custom({
-    Expression<int>? id,
-    Expression<String>? nombre,
-    Expression<int>? idCategoria,
-    Expression<int>? precio,
-    Expression<String>? imagen,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nombre != null) 'nombre': nombre,
-      if (idCategoria != null) 'id_categoria': idCategoria,
-      if (precio != null) 'precio': precio,
-      if (imagen != null) 'imagen': imagen,
-    });
-  }
-
-  ProductosCompanion copyWith({
-    Value<int>? id,
-    Value<String>? nombre,
-    Value<int>? idCategoria,
-    Value<int>? precio,
-    Value<String?>? imagen,
-  }) {
-    return ProductosCompanion(
-      id: id ?? this.id,
-      nombre: nombre ?? this.nombre,
-      idCategoria: idCategoria ?? this.idCategoria,
-      precio: precio ?? this.precio,
-      imagen: imagen ?? this.imagen,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nombre.present) {
-      map['nombre'] = Variable<String>(nombre.value);
-    }
-    if (idCategoria.present) {
-      map['id_categoria'] = Variable<int>(idCategoria.value);
-    }
-    if (precio.present) {
-      map['precio'] = Variable<int>(precio.value);
-    }
-    if (imagen.present) {
-      map['imagen'] = Variable<String>(imagen.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ProductosCompanion(')
-          ..write('id: $id, ')
-          ..write('nombre: $nombre, ')
-          ..write('idCategoria: $idCategoria, ')
-          ..write('precio: $precio, ')
-          ..write('imagen: $imagen')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $NotasTable(this.attachedDatabase, [this._alias]);
+  $NotasOfflineTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -572,6 +29,19 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(priority).isBetweenValues(2, 5),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
   static const VerificationMeta _textoMeta = const VerificationMeta('texto');
   @override
   late final GeneratedColumn<String> texto = GeneratedColumn<String>(
@@ -581,25 +51,50 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _fechaMeta = const VerificationMeta('fecha');
+  static const VerificationMeta _pendingSyncMeta = const VerificationMeta(
+    'pendingSync',
+  );
   @override
-  late final GeneratedColumn<DateTime> fecha = GeneratedColumn<DateTime>(
-    'fecha',
+  late final GeneratedColumn<bool> pendingSync = GeneratedColumn<bool>(
+    'pending_sync',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("pending_sync" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, idProducto, texto, fecha];
+  List<GeneratedColumn> get $columns => [
+    id,
+    idProducto,
+    priority,
+    texto,
+    pendingSync,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'notas';
+  static const String $name = 'notas_offline';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Nota> instance, {
+    Insertable<NotaOffline> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -615,6 +110,12 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
     } else if (isInserting) {
       context.missing(_idProductoMeta);
     }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
     if (data.containsKey('texto')) {
       context.handle(
         _textoMeta,
@@ -623,13 +124,20 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
     } else if (isInserting) {
       context.missing(_textoMeta);
     }
-    if (data.containsKey('fecha')) {
+    if (data.containsKey('pending_sync')) {
       context.handle(
-        _fechaMeta,
-        fecha.isAcceptableOrUnknown(data['fecha']!, _fechaMeta),
+        _pendingSyncMeta,
+        pendingSync.isAcceptableOrUnknown(
+          data['pending_sync']!,
+          _pendingSyncMeta,
+        ),
       );
-    } else if (isInserting) {
-      context.missing(_fechaMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     }
     return context;
   }
@@ -637,9 +145,9 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Nota map(Map<String, dynamic> data, {String? tablePrefix}) {
+  NotaOffline map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Nota(
+    return NotaOffline(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -648,63 +156,81 @@ class $NotasTable extends Notas with TableInfo<$NotasTable, Nota> {
         DriftSqlType.int,
         data['${effectivePrefix}id_producto'],
       )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
       texto: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}texto'],
       )!,
-      fecha: attachedDatabase.typeMapping.read(
+      pendingSync: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}pending_sync'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
-        data['${effectivePrefix}fecha'],
+        data['${effectivePrefix}updated_at'],
       )!,
     );
   }
 
   @override
-  $NotasTable createAlias(String alias) {
-    return $NotasTable(attachedDatabase, alias);
+  $NotasOfflineTable createAlias(String alias) {
+    return $NotasOfflineTable(attachedDatabase, alias);
   }
 }
 
-class Nota extends DataClass implements Insertable<Nota> {
+class NotaOffline extends DataClass implements Insertable<NotaOffline> {
   final int id;
   final int idProducto;
+  final int priority;
   final String texto;
-  final DateTime fecha;
-  const Nota({
+  final bool pendingSync;
+  final DateTime updatedAt;
+  const NotaOffline({
     required this.id,
     required this.idProducto,
+    required this.priority,
     required this.texto,
-    required this.fecha,
+    required this.pendingSync,
+    required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['id_producto'] = Variable<int>(idProducto);
+    map['priority'] = Variable<int>(priority);
     map['texto'] = Variable<String>(texto);
-    map['fecha'] = Variable<DateTime>(fecha);
+    map['pending_sync'] = Variable<bool>(pendingSync);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
-  NotasCompanion toCompanion(bool nullToAbsent) {
-    return NotasCompanion(
+  NotasOfflineCompanion toCompanion(bool nullToAbsent) {
+    return NotasOfflineCompanion(
       id: Value(id),
       idProducto: Value(idProducto),
+      priority: Value(priority),
       texto: Value(texto),
-      fecha: Value(fecha),
+      pendingSync: Value(pendingSync),
+      updatedAt: Value(updatedAt),
     );
   }
 
-  factory Nota.fromJson(
+  factory NotaOffline.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Nota(
+    return NotaOffline(
       id: serializer.fromJson<int>(json['id']),
       idProducto: serializer.fromJson<int>(json['idProducto']),
+      priority: serializer.fromJson<int>(json['priority']),
       texto: serializer.fromJson<String>(json['texto']),
-      fecha: serializer.fromJson<DateTime>(json['fecha']),
+      pendingSync: serializer.fromJson<bool>(json['pendingSync']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -713,96 +239,128 @@ class Nota extends DataClass implements Insertable<Nota> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'idProducto': serializer.toJson<int>(idProducto),
+      'priority': serializer.toJson<int>(priority),
       'texto': serializer.toJson<String>(texto),
-      'fecha': serializer.toJson<DateTime>(fecha),
+      'pendingSync': serializer.toJson<bool>(pendingSync),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
-  Nota copyWith({int? id, int? idProducto, String? texto, DateTime? fecha}) =>
-      Nota(
-        id: id ?? this.id,
-        idProducto: idProducto ?? this.idProducto,
-        texto: texto ?? this.texto,
-        fecha: fecha ?? this.fecha,
-      );
-  Nota copyWithCompanion(NotasCompanion data) {
-    return Nota(
+  NotaOffline copyWith({
+    int? id,
+    int? idProducto,
+    int? priority,
+    String? texto,
+    bool? pendingSync,
+    DateTime? updatedAt,
+  }) => NotaOffline(
+    id: id ?? this.id,
+    idProducto: idProducto ?? this.idProducto,
+    priority: priority ?? this.priority,
+    texto: texto ?? this.texto,
+    pendingSync: pendingSync ?? this.pendingSync,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  NotaOffline copyWithCompanion(NotasOfflineCompanion data) {
+    return NotaOffline(
       id: data.id.present ? data.id.value : this.id,
       idProducto: data.idProducto.present
           ? data.idProducto.value
           : this.idProducto,
+      priority: data.priority.present ? data.priority.value : this.priority,
       texto: data.texto.present ? data.texto.value : this.texto,
-      fecha: data.fecha.present ? data.fecha.value : this.fecha,
+      pendingSync: data.pendingSync.present
+          ? data.pendingSync.value
+          : this.pendingSync,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('Nota(')
+    return (StringBuffer('NotaOffline(')
           ..write('id: $id, ')
           ..write('idProducto: $idProducto, ')
+          ..write('priority: $priority, ')
           ..write('texto: $texto, ')
-          ..write('fecha: $fecha')
+          ..write('pendingSync: $pendingSync, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, idProducto, texto, fecha);
+  int get hashCode =>
+      Object.hash(id, idProducto, priority, texto, pendingSync, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Nota &&
+      (other is NotaOffline &&
           other.id == this.id &&
           other.idProducto == this.idProducto &&
+          other.priority == this.priority &&
           other.texto == this.texto &&
-          other.fecha == this.fecha);
+          other.pendingSync == this.pendingSync &&
+          other.updatedAt == this.updatedAt);
 }
 
-class NotasCompanion extends UpdateCompanion<Nota> {
+class NotasOfflineCompanion extends UpdateCompanion<NotaOffline> {
   final Value<int> id;
   final Value<int> idProducto;
+  final Value<int> priority;
   final Value<String> texto;
-  final Value<DateTime> fecha;
-  const NotasCompanion({
+  final Value<bool> pendingSync;
+  final Value<DateTime> updatedAt;
+  const NotasOfflineCompanion({
     this.id = const Value.absent(),
     this.idProducto = const Value.absent(),
+    this.priority = const Value.absent(),
     this.texto = const Value.absent(),
-    this.fecha = const Value.absent(),
+    this.pendingSync = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
-  NotasCompanion.insert({
+  NotasOfflineCompanion.insert({
     this.id = const Value.absent(),
     required int idProducto,
+    this.priority = const Value.absent(),
     required String texto,
-    required DateTime fecha,
+    this.pendingSync = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   }) : idProducto = Value(idProducto),
-       texto = Value(texto),
-       fecha = Value(fecha);
-  static Insertable<Nota> custom({
+       texto = Value(texto);
+  static Insertable<NotaOffline> custom({
     Expression<int>? id,
     Expression<int>? idProducto,
+    Expression<int>? priority,
     Expression<String>? texto,
-    Expression<DateTime>? fecha,
+    Expression<bool>? pendingSync,
+    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (idProducto != null) 'id_producto': idProducto,
+      if (priority != null) 'priority': priority,
       if (texto != null) 'texto': texto,
-      if (fecha != null) 'fecha': fecha,
+      if (pendingSync != null) 'pending_sync': pendingSync,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
-  NotasCompanion copyWith({
+  NotasOfflineCompanion copyWith({
     Value<int>? id,
     Value<int>? idProducto,
+    Value<int>? priority,
     Value<String>? texto,
-    Value<DateTime>? fecha,
+    Value<bool>? pendingSync,
+    Value<DateTime>? updatedAt,
   }) {
-    return NotasCompanion(
+    return NotasOfflineCompanion(
       id: id ?? this.id,
       idProducto: idProducto ?? this.idProducto,
+      priority: priority ?? this.priority,
       texto: texto ?? this.texto,
-      fecha: fecha ?? this.fecha,
+      pendingSync: pendingSync ?? this.pendingSync,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -815,22 +373,30 @@ class NotasCompanion extends UpdateCompanion<Nota> {
     if (idProducto.present) {
       map['id_producto'] = Variable<int>(idProducto.value);
     }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
     if (texto.present) {
       map['texto'] = Variable<String>(texto.value);
     }
-    if (fecha.present) {
-      map['fecha'] = Variable<DateTime>(fecha.value);
+    if (pendingSync.present) {
+      map['pending_sync'] = Variable<bool>(pendingSync.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('NotasCompanion(')
+    return (StringBuffer('NotasOfflineCompanion(')
           ..write('id: $id, ')
           ..write('idProducto: $idProducto, ')
+          ..write('priority: $priority, ')
           ..write('texto: $texto, ')
-          ..write('fecha: $fecha')
+          ..write('pendingSync: $pendingSync, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -839,349 +405,36 @@ class NotasCompanion extends UpdateCompanion<Nota> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $CategoriasTable categorias = $CategoriasTable(this);
-  late final $ProductosTable productos = $ProductosTable(this);
-  late final $NotasTable notas = $NotasTable(this);
+  late final $NotasOfflineTable notasOffline = $NotasOfflineTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [
-    categorias,
-    productos,
-    notas,
-  ];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [notasOffline];
 }
 
-typedef $$CategoriasTableCreateCompanionBuilder =
-    CategoriasCompanion Function({Value<int> id, required String nombre});
-typedef $$CategoriasTableUpdateCompanionBuilder =
-    CategoriasCompanion Function({Value<int> id, Value<String> nombre});
-
-class $$CategoriasTableFilterComposer
-    extends Composer<_$AppDatabase, $CategoriasTable> {
-  $$CategoriasTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nombre => $composableBuilder(
-    column: $table.nombre,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$CategoriasTableOrderingComposer
-    extends Composer<_$AppDatabase, $CategoriasTable> {
-  $$CategoriasTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nombre => $composableBuilder(
-    column: $table.nombre,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$CategoriasTableAnnotationComposer
-    extends Composer<_$AppDatabase, $CategoriasTable> {
-  $$CategoriasTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nombre =>
-      $composableBuilder(column: $table.nombre, builder: (column) => column);
-}
-
-class $$CategoriasTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $CategoriasTable,
-          Categoria,
-          $$CategoriasTableFilterComposer,
-          $$CategoriasTableOrderingComposer,
-          $$CategoriasTableAnnotationComposer,
-          $$CategoriasTableCreateCompanionBuilder,
-          $$CategoriasTableUpdateCompanionBuilder,
-          (
-            Categoria,
-            BaseReferences<_$AppDatabase, $CategoriasTable, Categoria>,
-          ),
-          Categoria,
-          PrefetchHooks Function()
-        > {
-  $$CategoriasTableTableManager(_$AppDatabase db, $CategoriasTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$CategoriasTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CategoriasTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CategoriasTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nombre = const Value.absent(),
-              }) => CategoriasCompanion(id: id, nombre: nombre),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nombre,
-              }) => CategoriasCompanion.insert(id: id, nombre: nombre),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$CategoriasTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $CategoriasTable,
-      Categoria,
-      $$CategoriasTableFilterComposer,
-      $$CategoriasTableOrderingComposer,
-      $$CategoriasTableAnnotationComposer,
-      $$CategoriasTableCreateCompanionBuilder,
-      $$CategoriasTableUpdateCompanionBuilder,
-      (Categoria, BaseReferences<_$AppDatabase, $CategoriasTable, Categoria>),
-      Categoria,
-      PrefetchHooks Function()
-    >;
-typedef $$ProductosTableCreateCompanionBuilder =
-    ProductosCompanion Function({
-      Value<int> id,
-      required String nombre,
-      required int idCategoria,
-      required int precio,
-      Value<String?> imagen,
-    });
-typedef $$ProductosTableUpdateCompanionBuilder =
-    ProductosCompanion Function({
-      Value<int> id,
-      Value<String> nombre,
-      Value<int> idCategoria,
-      Value<int> precio,
-      Value<String?> imagen,
-    });
-
-class $$ProductosTableFilterComposer
-    extends Composer<_$AppDatabase, $ProductosTable> {
-  $$ProductosTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nombre => $composableBuilder(
-    column: $table.nombre,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get idCategoria => $composableBuilder(
-    column: $table.idCategoria,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get precio => $composableBuilder(
-    column: $table.precio,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get imagen => $composableBuilder(
-    column: $table.imagen,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$ProductosTableOrderingComposer
-    extends Composer<_$AppDatabase, $ProductosTable> {
-  $$ProductosTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nombre => $composableBuilder(
-    column: $table.nombre,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get idCategoria => $composableBuilder(
-    column: $table.idCategoria,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get precio => $composableBuilder(
-    column: $table.precio,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get imagen => $composableBuilder(
-    column: $table.imagen,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$ProductosTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ProductosTable> {
-  $$ProductosTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nombre =>
-      $composableBuilder(column: $table.nombre, builder: (column) => column);
-
-  GeneratedColumn<int> get idCategoria => $composableBuilder(
-    column: $table.idCategoria,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get precio =>
-      $composableBuilder(column: $table.precio, builder: (column) => column);
-
-  GeneratedColumn<String> get imagen =>
-      $composableBuilder(column: $table.imagen, builder: (column) => column);
-}
-
-class $$ProductosTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $ProductosTable,
-          Producto,
-          $$ProductosTableFilterComposer,
-          $$ProductosTableOrderingComposer,
-          $$ProductosTableAnnotationComposer,
-          $$ProductosTableCreateCompanionBuilder,
-          $$ProductosTableUpdateCompanionBuilder,
-          (Producto, BaseReferences<_$AppDatabase, $ProductosTable, Producto>),
-          Producto,
-          PrefetchHooks Function()
-        > {
-  $$ProductosTableTableManager(_$AppDatabase db, $ProductosTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$ProductosTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ProductosTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ProductosTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nombre = const Value.absent(),
-                Value<int> idCategoria = const Value.absent(),
-                Value<int> precio = const Value.absent(),
-                Value<String?> imagen = const Value.absent(),
-              }) => ProductosCompanion(
-                id: id,
-                nombre: nombre,
-                idCategoria: idCategoria,
-                precio: precio,
-                imagen: imagen,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nombre,
-                required int idCategoria,
-                required int precio,
-                Value<String?> imagen = const Value.absent(),
-              }) => ProductosCompanion.insert(
-                id: id,
-                nombre: nombre,
-                idCategoria: idCategoria,
-                precio: precio,
-                imagen: imagen,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$ProductosTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $ProductosTable,
-      Producto,
-      $$ProductosTableFilterComposer,
-      $$ProductosTableOrderingComposer,
-      $$ProductosTableAnnotationComposer,
-      $$ProductosTableCreateCompanionBuilder,
-      $$ProductosTableUpdateCompanionBuilder,
-      (Producto, BaseReferences<_$AppDatabase, $ProductosTable, Producto>),
-      Producto,
-      PrefetchHooks Function()
-    >;
-typedef $$NotasTableCreateCompanionBuilder =
-    NotasCompanion Function({
+typedef $$NotasOfflineTableCreateCompanionBuilder =
+    NotasOfflineCompanion Function({
       Value<int> id,
       required int idProducto,
+      Value<int> priority,
       required String texto,
-      required DateTime fecha,
+      Value<bool> pendingSync,
+      Value<DateTime> updatedAt,
     });
-typedef $$NotasTableUpdateCompanionBuilder =
-    NotasCompanion Function({
+typedef $$NotasOfflineTableUpdateCompanionBuilder =
+    NotasOfflineCompanion Function({
       Value<int> id,
       Value<int> idProducto,
+      Value<int> priority,
       Value<String> texto,
-      Value<DateTime> fecha,
+      Value<bool> pendingSync,
+      Value<DateTime> updatedAt,
     });
 
-class $$NotasTableFilterComposer extends Composer<_$AppDatabase, $NotasTable> {
-  $$NotasTableFilterComposer({
+class $$NotasOfflineTableFilterComposer
+    extends Composer<_$AppDatabase, $NotasOfflineTable> {
+  $$NotasOfflineTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1198,20 +451,30 @@ class $$NotasTableFilterComposer extends Composer<_$AppDatabase, $NotasTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get texto => $composableBuilder(
     column: $table.texto,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get fecha => $composableBuilder(
-    column: $table.fecha,
+  ColumnFilters<bool> get pendingSync => $composableBuilder(
+    column: $table.pendingSync,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
 
-class $$NotasTableOrderingComposer
-    extends Composer<_$AppDatabase, $NotasTable> {
-  $$NotasTableOrderingComposer({
+class $$NotasOfflineTableOrderingComposer
+    extends Composer<_$AppDatabase, $NotasOfflineTable> {
+  $$NotasOfflineTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1228,20 +491,30 @@ class $$NotasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get texto => $composableBuilder(
     column: $table.texto,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get fecha => $composableBuilder(
-    column: $table.fecha,
+  ColumnOrderings<bool> get pendingSync => $composableBuilder(
+    column: $table.pendingSync,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
 
-class $$NotasTableAnnotationComposer
-    extends Composer<_$AppDatabase, $NotasTable> {
-  $$NotasTableAnnotationComposer({
+class $$NotasOfflineTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NotasOfflineTable> {
+  $$NotasOfflineTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1256,62 +529,81 @@ class $$NotasTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
   GeneratedColumn<String> get texto =>
       $composableBuilder(column: $table.texto, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get fecha =>
-      $composableBuilder(column: $table.fecha, builder: (column) => column);
+  GeneratedColumn<bool> get pendingSync => $composableBuilder(
+    column: $table.pendingSync,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
-class $$NotasTableTableManager
+class $$NotasOfflineTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $NotasTable,
-          Nota,
-          $$NotasTableFilterComposer,
-          $$NotasTableOrderingComposer,
-          $$NotasTableAnnotationComposer,
-          $$NotasTableCreateCompanionBuilder,
-          $$NotasTableUpdateCompanionBuilder,
-          (Nota, BaseReferences<_$AppDatabase, $NotasTable, Nota>),
-          Nota,
+          $NotasOfflineTable,
+          NotaOffline,
+          $$NotasOfflineTableFilterComposer,
+          $$NotasOfflineTableOrderingComposer,
+          $$NotasOfflineTableAnnotationComposer,
+          $$NotasOfflineTableCreateCompanionBuilder,
+          $$NotasOfflineTableUpdateCompanionBuilder,
+          (
+            NotaOffline,
+            BaseReferences<_$AppDatabase, $NotasOfflineTable, NotaOffline>,
+          ),
+          NotaOffline,
           PrefetchHooks Function()
         > {
-  $$NotasTableTableManager(_$AppDatabase db, $NotasTable table)
+  $$NotasOfflineTableTableManager(_$AppDatabase db, $NotasOfflineTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$NotasTableFilterComposer($db: db, $table: table),
+              $$NotasOfflineTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$NotasTableOrderingComposer($db: db, $table: table),
+              $$NotasOfflineTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$NotasTableAnnotationComposer($db: db, $table: table),
+              $$NotasOfflineTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<int> idProducto = const Value.absent(),
+                Value<int> priority = const Value.absent(),
                 Value<String> texto = const Value.absent(),
-                Value<DateTime> fecha = const Value.absent(),
-              }) => NotasCompanion(
+                Value<bool> pendingSync = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => NotasOfflineCompanion(
                 id: id,
                 idProducto: idProducto,
+                priority: priority,
                 texto: texto,
-                fecha: fecha,
+                pendingSync: pendingSync,
+                updatedAt: updatedAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required int idProducto,
+                Value<int> priority = const Value.absent(),
                 required String texto,
-                required DateTime fecha,
-              }) => NotasCompanion.insert(
+                Value<bool> pendingSync = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => NotasOfflineCompanion.insert(
                 id: id,
                 idProducto: idProducto,
+                priority: priority,
                 texto: texto,
-                fecha: fecha,
+                pendingSync: pendingSync,
+                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -1321,28 +613,27 @@ class $$NotasTableTableManager
       );
 }
 
-typedef $$NotasTableProcessedTableManager =
+typedef $$NotasOfflineTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $NotasTable,
-      Nota,
-      $$NotasTableFilterComposer,
-      $$NotasTableOrderingComposer,
-      $$NotasTableAnnotationComposer,
-      $$NotasTableCreateCompanionBuilder,
-      $$NotasTableUpdateCompanionBuilder,
-      (Nota, BaseReferences<_$AppDatabase, $NotasTable, Nota>),
-      Nota,
+      $NotasOfflineTable,
+      NotaOffline,
+      $$NotasOfflineTableFilterComposer,
+      $$NotasOfflineTableOrderingComposer,
+      $$NotasOfflineTableAnnotationComposer,
+      $$NotasOfflineTableCreateCompanionBuilder,
+      $$NotasOfflineTableUpdateCompanionBuilder,
+      (
+        NotaOffline,
+        BaseReferences<_$AppDatabase, $NotasOfflineTable, NotaOffline>,
+      ),
+      NotaOffline,
       PrefetchHooks Function()
     >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$CategoriasTableTableManager get categorias =>
-      $$CategoriasTableTableManager(_db, _db.categorias);
-  $$ProductosTableTableManager get productos =>
-      $$ProductosTableTableManager(_db, _db.productos);
-  $$NotasTableTableManager get notas =>
-      $$NotasTableTableManager(_db, _db.notas);
+  $$NotasOfflineTableTableManager get notasOffline =>
+      $$NotasOfflineTableTableManager(_db, _db.notasOffline);
 }

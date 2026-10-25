@@ -2,21 +2,24 @@ class Nota {
   final int id;
   final int idProducto;
   final String texto;
-  final DateTime fecha;
+  final int priority;
+  final DateTime updatedAt;
 
   Nota({
     required this.id,
     required this.idProducto,
     required this.texto,
-    required this.fecha,
-  });
+    required this.priority,
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Nota.fromJson(Map<String, dynamic> json) {
     return Nota(
       id: json["id"],
       idProducto: json["id_producto"],
       texto: json["texto"],
-      fecha: DateTime.parse(json["fecha"]),
+      priority: json["priority"] ?? 1,
+      updatedAt: json["fecha"] != null ? DateTime.parse(json["fecha"]) : null,
     );
   }
 
@@ -24,6 +27,7 @@ class Nota {
     "id": id,
     "id_producto": idProducto,
     "texto": texto,
-    "fecha": fecha.toIso8601String(),
+    "priority": priority,
+    "fecha": updatedAt.toIso8601String(),
   };
 }

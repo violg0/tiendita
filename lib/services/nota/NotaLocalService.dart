@@ -1,43 +1,53 @@
-class CategoriaLocalService {
-  final AppDatabase _db;
-  CategoriaLocalService([AppDatabase? database]) : _db = database ?? db;
+import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' show Value;
+import 'package:tiendatech/models/Nota.dart' show Nota;
+import 'package:tiendatech/repository/database.dart';
 
-  Future<List<Categoria>> listar() {
-    return (_db.select(
-      _db.categorias,
-    )..orderBy([(c) => OrderingTerm.asc(c.id)])).get();
-  }
+class NotasLocalService {
+  Nota _aNota(NotaOffline fila) => Nota(
+    id: fila.id,
+    idProducto: fila.idProducto,
+    texto: fila.texto,
+    priority: fila.priority,
+    updatedAt: fila.updatedAt,
+  );
+  /*
 
-  Stream<List<Categoria>> observar() {
-    return (_db.select(
-      _db.categorias,
-    )..orderBy([(c) => OrderingTerm.asc(c.id)])).watch();
-  }
-
-  Future<Categoria?> obtenerPorId(int id) {
-    return (_db.select(
-      _db.categorias,
+  // READ: una por id (null si no existe)
+  Future<NotaOffline?> obtenerPorId(int id) {
+    return (db.select(
+      db.notasOffline,
     )..where((c) => c.id.equals(id))).getSingleOrNull();
   }
+*/
 
-  // Inserta o actualiza (equivale al .set() de Firestore)
-  Future<void> guardar(Categoria c) {
-    return _db
-        .into(_db.categorias)
+  // READ: notas de un producto, como Nota (las más recientes primero)
+  Future<List<Nota>> obtenerPorIdProducto(int idProducto) async {
+    final filas =
+        await (db.select(db.notasOffline)
+              ..where((n) => n.idProducto.equals(idProducto))
+              ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))
+            .get();
+
+    return filas.map(_aNota).toList();
+  }
+
+  // CREATE y UPDATE: inserta si el id no existe, actualiza si existe
+  Future<void> guardar(Nota nota) {
+    return db
+        .into(db.notasOffline)
         .insertOnConflictUpdate(
-          CategoriasCompanion(id: Value(c.id), nombre: Value(c.nombre)),
+          NotasOfflineCompanion(
+            id: Value(nota.id),
+            idProducto: Value(nota.idProducto),
+            priority: Value(nota.priority),
+            texto: Value(nota.texto),
+          ),
         );
   }
 
+  // DELETE
   Future<void> eliminar(int id) {
-    return (_db.delete(_db.categorias)..where((c) => c.id.equals(id))).go();
-  }
-
-  Future<int> siguienteId() async {
-    final maxId = _db.categorias.id.max();
-    final fila = await (_db.selectOnly(
-      _db.categorias,
-    )..addColumns([maxId])).getSingle();
-    return (fila.read(maxId) ?? 0) + 1;
+    return (db.delete(db.notasOffline)..where((c) => c.id.equals(id))).go();
   }
 }

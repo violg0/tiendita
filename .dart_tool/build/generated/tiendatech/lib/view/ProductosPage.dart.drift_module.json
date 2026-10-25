@@ -1,0 +1,10 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:tiendatech/components/ProductoCard.dart",
+    "package:tiendatech/repository/database.dart",
+    "package:tiendatech/services/producto/producto_service.dart",
+    "package:tiendatech/view/ProductoDetallePage.dart"
+  ]
+}

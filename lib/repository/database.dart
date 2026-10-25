@@ -3,30 +3,23 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 part 'database.g.dart';
 
-@UseRowClass(Categoria)
-class Categorias extends Table {
+@DataClassName('NotaOffline')
+class NotasOffline extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get nombre => text()();
-}
 
-@UseRowClass(Producto)
-class Productos extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get nombre => text()();
-  IntColumn get idCategoria => integer().references(Categorias, #id)();
-  IntColumn get precio => integer()();
-  TextColumn get imagen => text().nullable()();
-}
+  // Plain integer on purpose: no foreign key (see below)
+  IntColumn get idProducto => integer()();
 
-@UseRowClass(Nota)
-class Notas extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get idProducto => integer().references(Productos, #id)();
+  IntColumn get priority => integer()
+      .withDefault(const Constant(1))
+      .check(priority.isBetweenValues(2, 5))();
   TextColumn get texto => text()();
-  DateTimeColumn get fecha => dateTime()();
+
+  BoolColumn get pendingSync => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
 
-@DriftDatabase(tables: [Categorias, Productos, Notas])
+@DriftDatabase(tables: [NotasOffline])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'tienda'));
 
