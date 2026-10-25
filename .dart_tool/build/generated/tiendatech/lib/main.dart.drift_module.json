@@ -3,6 +3,7 @@
   "imports": [
     "package:firebase_core/firebase_core.dart",
     "package:flutter/material.dart",
-    "package:tiendatech/firebase_options.dart"
+    "package:tiendatech/firebase_options.dart",
+    "package:tiendatech/screens/product_screen.dart"
   ]
 }
