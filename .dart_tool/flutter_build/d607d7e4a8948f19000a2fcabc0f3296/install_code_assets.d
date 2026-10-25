@@ -1,0 +1,1 @@
+ /home/unit/Documents/universidad/movil/tiendita/.dart_tool/flutter_build/d607d7e4a8948f19000a2fcabc0f3296/native_assets.json: 
