@@ -30,15 +30,31 @@ class Notas extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Productos, Notas])
+class ProductNotes extends Table {
+  TextColumn get productId => text()();
+  TextColumn get note => text()();
+  IntColumn get priority => integer()();
+  DateTimeColumn get updatedAt => dateTime()();
+  BoolColumn get pendingSync => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {productId};
+}
+
+@DriftDatabase(tables: [Productos, Notas, ProductNotes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'tienda'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(productNotes);
+      }
+    },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
