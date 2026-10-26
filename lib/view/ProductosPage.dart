@@ -9,18 +9,8 @@ import 'package:tiendatech/services/producto/producto_service.dart'
 import 'package:tiendatech/view/ProductoDetallePage.dart'
     show ProductoDetallePage;
 
-/// Los estados posibles de la pantalla.
 enum EstadoCarga { cargando, exito, vacio, timeout, error }
 
-/// Catálogo de productos en una cuadrícula de tarjetas.
-///
-/// Responsabilidades:
-/// - Pedir los productos al servicio y mostrar cada estado.
-/// - Permitir reintentar cuando hay error o timeout.
-/// - Sincronizar los registros pendientes (a través del repositorio).
-/// - Navegar al detalle enviando el producto seleccionado.
-///
-/// Los servicios llegan por el constructor (inyección de dependencias).
 class ProductosPage extends StatefulWidget {
   final ProductoService productoService;
   final NotaRepository repositorio;
@@ -50,7 +40,6 @@ class _ProductosPageState extends State<ProductosPage> {
     _cargarProductos();
   }
 
-  // ---------- LÓGICA ----------
 
   Future<void> _cargarProductos() async {
     setState(() {
@@ -71,8 +60,6 @@ class _ProductosPageState extends State<ProductosPage> {
     } on TimeoutException {
       _cambiarEstado(EstadoCarga.timeout);
     } catch (e) {
-      // El servicio lanza mensajes como "HTTP 404" o "Sin conexión";
-      // aquí solo se muestran.
       if (!mounted) return;
       setState(() {
         _detalleError = e.toString().replaceFirst('Exception: ', '');
@@ -126,7 +113,6 @@ class _ProductosPageState extends State<ProductosPage> {
     );
   }
 
-  // ---------- INTERFAZ ----------
 
   @override
   Widget build(BuildContext context) {

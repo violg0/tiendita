@@ -7,7 +7,6 @@ part 'database.g.dart';
 class NotasOffline extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  // Plain integer on purpose: no foreign key (see below)
   IntColumn get idProducto => integer()();
 
   IntColumn get priority => integer()

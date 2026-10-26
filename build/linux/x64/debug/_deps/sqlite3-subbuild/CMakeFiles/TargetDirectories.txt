@@ -1,3 +1,0 @@
-/home/unit/Documents/universidad/movil/tiendita/build/linux/x64/debug/_deps/sqlite3-subbuild/CMakeFiles/sqlite3-populate.dir
-/home/unit/Documents/universidad/movil/tiendita/build/linux/x64/debug/_deps/sqlite3-subbuild/CMakeFiles/edit_cache.dir
-/home/unit/Documents/universidad/movil/tiendita/build/linux/x64/debug/_deps/sqlite3-subbuild/CMakeFiles/rebuild_cache.dir

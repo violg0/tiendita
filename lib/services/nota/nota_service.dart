@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/Nota.dart';
 
-/// Access to remote notes in Firestore. Local persistence is handled by
-/// NotaRepository through NotasLocalService.
 class NotaService {
-  // Si Firestore no responde en este tiempo, se considera que falló.
-  // (Sin internet, Firestore no lanza error: se queda esperando.)
   static const Duration _tiempoMaximo = Duration(seconds: 10);
 
   CollectionReference<Map<String, dynamic>> get _coleccion =>
@@ -29,8 +25,6 @@ class NotaService {
     return data == null ? null : Nota.fromJson(data);
   }
 
-  /// Guarda una nota en Firestore. La persistencia local y el estado de
-  /// sincronización son responsabilidad de NotaRepository.
   Future<void> guardar(Nota nota) async {
     await _coleccion
         .doc(nota.id.toString())

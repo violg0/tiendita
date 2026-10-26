@@ -3,13 +3,6 @@ import 'package:tiendatech/models/Nota.dart' show Nota;
 import 'package:tiendatech/models/Producto.dart' show Producto;
 import 'package:tiendatech/repository/nota_repository.dart' show NotaRepository;
 
-/// Detalle de un [Producto].
-///
-/// Permite registrar UNA prioridad (1 a 5) y UNA nota personal por producto.
-/// Regla: solo se guarda si la prioridad es 2 o más.
-///
-/// Esta pantalla no habla con Drift ni con Firebase: usa solo el
-/// [NotaRepository]. Los servicios llegan por el constructor.
 class ProductoDetallePage extends StatefulWidget {
   final Producto producto;
   final NotaRepository repositorio;
@@ -33,7 +26,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
   int _prioridad = 1;
 
-  Nota? _registro; // lo que hay guardado en Drift (null = nada guardado)
+  Nota? _registro;
   bool _cargandoRegistro = true;
   bool _guardando = false;
 
@@ -49,9 +42,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
     super.dispose();
   }
 
-  // ---------- LÓGICA ----------
 
-  /// Al abrir el detalle, recupera nota, prioridad y estado desde Drift.
   Future<void> _cargarRegistro() async {
     try {
       final registro = await widget.repositorio.obtenerPorProducto(
@@ -73,7 +64,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
     }
   }
 
-  /// Devuelve el mensaje de error, o null si todo está bien.
   String? _validar(String texto) {
     if (_prioridad < _prioridadMinimaParaGuardar) {
       return 'La prioridad debe ser $_prioridadMinimaParaGuardar o más '
@@ -93,7 +83,7 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
 
     final error = _validar(texto);
     if (error != null) {
-      _mostrarMensaje(error); // no se guarda nada
+      _mostrarMensaje(error);
       return;
     }
 
@@ -131,7 +121,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
         '${dos(fecha.hour)}:${dos(fecha.minute)}';
   }
 
-  // ---------- INTERFAZ ----------
 
   @override
   Widget build(BuildContext context) {
@@ -205,8 +194,6 @@ class _ProductoDetallePageState extends State<ProductoDetallePage> {
     );
   }
 
-  /// Muestra lo que hay guardado en Drift:
-  /// nada guardado, Pendiente o Sincronizado.
   Widget _construirEstado() {
     final textos = Theme.of(context).textTheme;
 

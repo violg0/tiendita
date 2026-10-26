@@ -23,7 +23,6 @@ class NotasLocalService {
     return fila == null ? null : _aNota(fila);
   }
 
-  // READ: notas de un producto, como Nota (las más recientes primero)
   Future<List<Nota>> obtenerPorIdProducto(int idProducto) async {
     final filas =
         await (db.select(db.notasOffline)
@@ -64,7 +63,6 @@ class NotasLocalService {
     );
   }
 
-  // DELETE
   Future<void> eliminar(int id) {
     return (db.delete(db.notasOffline)..where((c) => c.id.equals(id))).go();
   }

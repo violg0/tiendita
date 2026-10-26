@@ -1,1 +1,0 @@
- /home/unit/Documents/universidad/movil/tiendita/.dart_tool/flutter_build/d607d7e4a8948f19000a2fcabc0f3296/dart_build_result.json:  /home/unit/Documents/universidad/movil/tiendita/.dart_tool/package_config.json /home/unit/Documents/universidad/movil/tiendita/pubspec.yaml /opt/flutter/bin/cache/dart-sdk/version

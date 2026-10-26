@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "59051603205",
+    "project_id": "tienda-de-hobbies",
+    "storage_bucket": "tienda-de-hobbies.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59051603205:android:d653da4d359dcc7d04736c",
+        "android_client_info": {
+          "package_name": "com.example.tiendatech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf0Ddc8Qf_hqtCpUQiuAggz_gCNPO_kUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
